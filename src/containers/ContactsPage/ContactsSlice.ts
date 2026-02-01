@@ -62,7 +62,7 @@ export const contactsSlice = createSlice({
     }
 });
 
-export const fetchAllContacts = createAsyncThunk<IContactsAPI>('/contacts',
+export const fetchAllContacts = createAsyncThunk<IContactsAPI, void>('/contacts',
     async () => {
     const response = await axiosAPI.get<IContactsAPI>('contacts.json');
     return response.data;
