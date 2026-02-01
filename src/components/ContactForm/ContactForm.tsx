@@ -1,15 +1,22 @@
 import type {IContactForm} from '../../types';
 import {useForm} from 'react-hook-form';
 import {Box, Button, Grid, TextField, Typography} from '@mui/material';
-import {useNavigate} from 'react-router-dom';
-import {useAppDispatch} from '../../app/hooks.ts';
+import {NavLink, useNavigate} from 'react-router-dom';
+import {useAppDispatch, useAppSelector} from '../../app/hooks.ts';
 import SaveIcon from '@mui/icons-material/Save';
 import EditDocumentIcon from '@mui/icons-material/EditDocument';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import {fetchAddContact} from '../../containers/ContactsPage/ContactsSlice.ts';
+import {
+    selectIsAddLoading
+} from '../../containers/ContactsPage/ContactsSelectors.ts';
+import * as React from 'react';
+import {useEffect} from 'react';
+import {EMPTY_VALUES} from '../../Constants.ts';
 
 interface Props {
     isEdit?: boolean;
-    contactId: string;
+    contactId?: string;
     initialValues?: IContactForm;
 }
 
@@ -17,28 +24,34 @@ interface Props {
 const ContactForm: React.FC<Props> = ({isEdit, contactId, initialValues}) => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
-
-
-    const emptyValues: IContactForm = {
-        name: '',
-        phone: '',
-        email: '',
-        photo: '',
-    };
+    const isAddLoadingSelector = useAppSelector(selectIsAddLoading);
 
     const {register, handleSubmit, reset, formState: {errors}} = useForm<IContactForm>({
-            defaultValues: emptyValues,
+            defaultValues: EMPTY_VALUES,
     });
 
     const onSubmit = (data: IContactForm) => {
-
+        if (isEdit && contactId) {
+            console.log(data);
+        } else {
+            dispatch(fetchAddContact(data))
+            navigate('/');
+        }
     };
+
+    useEffect(() => {
+        if (isEdit && initialValues) {
+            reset(initialValues);
+        } else {
+            reset(EMPTY_VALUES);
+        }
+    }, [initialValues, isEdit, reset]);
 
 
     return (
         <Box sx={{ mt: 4 }}>
-            <form>
-                <Typography component="h4" variant="h4" sx={{ fontWeight: 'bold', textAlign: 'center' }}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <Typography component="h4" variant="h4" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 3 }}>
                     {isEdit ? 'Edit Contact' : 'Add Contact'}
                 </Typography>
 
@@ -58,6 +71,7 @@ const ContactForm: React.FC<Props> = ({isEdit, contactId, initialValues}) => {
                         })}
                         error={!!errors.name}
                         helperText={errors.name?.message}
+                        disabled={isAddLoadingSelector}
                     />
                 </Grid>
 
@@ -75,6 +89,7 @@ const ContactForm: React.FC<Props> = ({isEdit, contactId, initialValues}) => {
                         })}
                         error={!!errors.phone}
                         helperText={errors.phone?.message}
+                        disabled={isAddLoadingSelector}
                     />
                 </Grid>
 
@@ -91,8 +106,9 @@ const ContactForm: React.FC<Props> = ({isEdit, contactId, initialValues}) => {
                             },
                             setValueAs: (value: string) => value.trim() ?? ''
                         })}
-                        error={!!errors.phone}
-                        helperText={errors.phone?.message}
+                        error={!!errors.email}
+                        helperText={errors.email?.message}
+                        disabled={isAddLoadingSelector}
                     />
                 </Grid>
 
@@ -102,13 +118,14 @@ const ContactForm: React.FC<Props> = ({isEdit, contactId, initialValues}) => {
                         variant='outlined'
                         label='Photo'
                         {...register('photo')}
+                        disabled={isAddLoadingSelector}
                     />
                 </Grid>
 
                 <Grid size={12}>
                     <Button
-                        type='button'
-                        loading
+                        type='submit'
+                        loading={isAddLoadingSelector}
                         loadingPosition="start"
                         startIcon={isEdit ? <EditDocumentIcon /> : <SaveIcon />}
                         variant="outlined"
@@ -117,9 +134,14 @@ const ContactForm: React.FC<Props> = ({isEdit, contactId, initialValues}) => {
                     </Button>
 
                      <Button
-                        variant="outlined"
-                        type="button"
-                        startIcon={<ArrowBackIosIcon />}
+                         loading={isAddLoadingSelector}
+                         loadingPosition='start'
+                         sx={{ mx: 2 }}
+                         variant="outlined"
+                         type="button"
+                         startIcon={<ArrowBackIosIcon />}
+                         component={NavLink}
+                         to='/'
                     >
                         Back to contacts
                     </Button>

@@ -1,4 +1,4 @@
-import {AppBar, Box, Toolbar, Typography} from '@mui/material';
+import {AppBar, Box, Button, Toolbar, Typography} from '@mui/material';
 import {NavLink} from 'react-router-dom';
 
 const NavBar = () => {
@@ -13,6 +13,16 @@ const NavBar = () => {
                 >
                     Contacts
                 </Typography>
+
+                    <Button
+                        sx={{ mx: 'auto', color: 'white' }}
+                        variant="outlined"
+                        type="button"
+                        component={NavLink}
+                        to='/contacts/add-contact'
+                    >
+                        add contact
+                    </Button>
                 </Toolbar>
             </AppBar>
         </Box>

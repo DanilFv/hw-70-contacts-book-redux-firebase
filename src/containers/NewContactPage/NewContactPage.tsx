@@ -1,10 +1,11 @@
+import ContactForm from '../../components/ContactForm/ContactForm.tsx';
 
 
 const NewContactPage = () => {
     return (
-        <div>
-            add contact
-        </div>
+        <>
+            <ContactForm />
+        </>
     );
 };
 

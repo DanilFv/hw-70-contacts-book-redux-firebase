@@ -1,7 +1,18 @@
 import {Box, Card, CardContent, CardMedia, Typography} from '@mui/material';
+import {useAppDispatch, useAppSelector} from '../../app/hooks.ts';
+import {selectContacts} from './ContactsSelectors.ts';
+import {useEffect} from 'react';
+import {fetchAllContacts} from './ContactsSlice.ts';
 
 
 const ContactsPage = () => {
+    const contactsSelector = useAppSelector(selectContacts);
+    const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        dispatch(fetchAllContacts())
+    }, [dispatch]);
+
     return (
         <>
             <Card sx={{ display: 'flex', width: '100%', maxWidth: '400px', alignItems: 'center', mt: 3, boxShadow: 3, overflow: 'hidden' }}>
