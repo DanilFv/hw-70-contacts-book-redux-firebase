@@ -6,13 +6,13 @@ import ContactsPage from './containers/ContactsPage/ContactsPage.tsx';
 import NewContactPage from './containers/NewContactPage/NewContactPage.tsx';
 import EditContactPage from './containers/EditContactPage/EditContactPage.tsx';
 
+
 const App = () => {
 
 
   return (
     <>
         <NavBar/>
-
         <Container>
             <Routes>
                 <Route path='/' element={(<ContactsPage />)} />

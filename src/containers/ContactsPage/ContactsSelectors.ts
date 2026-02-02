@@ -6,3 +6,4 @@ export const selectOneContact = (state: RootState) => state.contacts.oneContact;
 export const selectIsAddLoading = (state: RootState) => state.contacts.isAddLoading;
 export const selectIsLoading = (state: RootState) => state.contacts.isLoading;
 export const selectIsDeleteLoading = (state: RootState) => state.contacts.isDeleteLoading;
+export const selectIsOneLoading = (state: RootState) => state.contacts.isOneContactLoading;

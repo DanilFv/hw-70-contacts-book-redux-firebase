@@ -6,18 +6,21 @@ import {useAppDispatch, useAppSelector} from '../../app/hooks.ts';
 import SaveIcon from '@mui/icons-material/Save';
 import EditDocumentIcon from '@mui/icons-material/EditDocument';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import {fetchAddContact} from '../../containers/ContactsPage/ContactsSlice.ts';
+import {
+    fetchAddContact,
+    fetchEditContact
+} from '../../containers/ContactsPage/ContactsSlice.ts';
 import {
     selectIsAddLoading
 } from '../../containers/ContactsPage/ContactsSelectors.ts';
 import * as React from 'react';
 import {useEffect} from 'react';
-import {EMPTY_VALUES} from '../../Constants.ts';
+import {EMPTY_VALUES, noImage} from '../../Constants.ts';
 
 interface Props {
     isEdit?: boolean;
     contactId?: string;
-    initialValues?: IContactForm;
+    initialValues?: IContactForm | null;
 }
 
 
@@ -26,18 +29,20 @@ const ContactForm: React.FC<Props> = ({isEdit, contactId, initialValues}) => {
     const dispatch = useAppDispatch();
     const isAddLoadingSelector = useAppSelector(selectIsAddLoading);
 
-    const {register, handleSubmit, reset, formState: {errors}} = useForm<IContactForm>({
+    const {register, handleSubmit, reset, watch, formState: {errors}} = useForm<IContactForm>({
             defaultValues: EMPTY_VALUES,
     });
 
     const onSubmit = (data: IContactForm) => {
         if (isEdit && contactId) {
-            console.log(data);
+            dispatch(fetchEditContact({id: contactId, contact: data}));
         } else {
-            dispatch(fetchAddContact(data))
-            navigate('/');
+            dispatch(fetchAddContact(data));
         }
+         navigate('/');
     };
+
+    const photoUrl = watch('photo');
 
     useEffect(() => {
         if (isEdit && initialValues) {
@@ -120,6 +125,15 @@ const ContactForm: React.FC<Props> = ({isEdit, contactId, initialValues}) => {
                         {...register('photo')}
                         disabled={isAddLoadingSelector}
                     />
+
+                     {photoUrl && (
+                        <img
+                            src={photoUrl}
+                            alt="Preview"
+                            style={{ width: 120, height: 120, objectFit: 'cover', marginTop: 10 }}
+                            onError={(e) => { (e.target as HTMLImageElement).src = noImage; }}
+                        />
+                    )}
                 </Grid>
 
                 <Grid size={12}>

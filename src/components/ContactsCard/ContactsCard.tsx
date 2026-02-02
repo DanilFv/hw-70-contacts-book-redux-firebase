@@ -5,13 +5,16 @@ import * as React from 'react';
 
 interface Props {
     contacts: IContacts[];
+    onClick: (id: string) => void;
 }
 
-const ContactsCard: React.FC<Props> = ({contacts}) => {
+const ContactsCard: React.FC<Props> = ({contacts, onClick}) => {
     return (
         <Box>
             {contacts.map((contact) => (
-                <ContactsCardItem contact={contact} />
+                <Box key={contact.id} onClick={() => onClick(contact.id)}>
+                    <ContactsCardItem key={contact.id} contact={contact} />
+                </Box>
             ))}
         </Box>
     );

@@ -12,3 +12,8 @@ export interface IContacts extends IContactForm {
 export interface IContactsAPI {
     [key: string]: IContactForm;
 }
+
+export interface IUpdateContact {
+    id: string;
+    contact: IContact;
+}
